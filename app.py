@@ -309,13 +309,14 @@ def homepage():
     """
 
     if g.user:
+        following_ids = [user.id for user in g.user.following]
+        following_ids.append(g.user.id)
         messages = (Message
                     .query
                     .order_by(Message.timestamp.desc())
                     .limit(100)
                     .all())
-        # import pdb
-        # pdb.set_trace()
+        messages = [msg for msg in messages if msg.user_id in following_ids]
         return render_template('home.html', messages=messages)
 
     else:
