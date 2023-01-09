@@ -1,0 +1,47 @@
+Why does the user model have a location attribute and why is it a text field?
+
+Why does Users model have a followers and following attribute relationship to USER?? shouldnt it be to followers
+
+Home route gets messages but doesnt seem to specify which users messages to get....
+
+messages are protected on the home page. but if you know the username you can still search and see their page!!!!!!!!!!!!!!
+is this ok?
+
+{{Step One: Understand the Model
+Read models.py. Make a diagram of the four tables.
+Note that the follows table has an unusual arrangement: it has two foreign keys to the same table. Why?
+******So that you can not follow some one twice
+Using pdb, set a debugger in one of your routes, and hit it to pause code execution. From here, 
+try out the various relationships set on the model classes. Get a feel for how they work.}}
+
+
+YOU CAN FOLLOW YOURSELF.....is this ok?
+I CAN UPDATE MY BIO IN pdb.set_trace() BUT IT DOESNT SHOW ON MY USER PAGE
+SEARCH WORKS BUT YOU HAVE TO PUT THE EXACT CAPITALIZATION OF USERNAME. 
+*MAYBE ADD A FUZZY SEARCH AND A SEARCH BY MESSAGES
+CAN NOT ACCESS LIKES FORM MESSAGES MODELS.
+*CHECK IF YOU CAN SEE A USERS FOLLOWERS AND FOLLOWING IF YOU ARE NOT ALSO FOLLOWING. 
+*DO YOU HAVE TO ACCEPT A FOLLOW. CAN YOU BLOCK/REMOVE A FOLLOW. 
+
+*******LIKES AND FOLLOWS WAS NOT IN THE ROUTE SO I ADDED THEM. 
+
+NEXT:
+try to add likes and move through the followers. 
+also how am I able to follow if follows was not imported into the app.py file????????
+
+****TO ADD LIKES FEATURE I WILL UPDATE ROUTES TO APPEND THE MESSAGE TO g.user.likes.append(message)
+this will create a like. so you dont need the Likes class in the app.py routes because you can access 
+like through the user model.
+
+time about 3hrs working on warbler. 1/8/23 1:44am
+
+notes about is_following method on User model. >>> if user is following other user. other user is place in a list
+we then check the length of the list. 
+
+>>>come back to check on the class you added to this users header background image. see if style.css
+already has a class for this image.
+<img class="image-wraper" src="{{user.header_image_url}}" alt="Hearder image for {{user.username}}">
+I took off the class because it didnt seem to make a difference.  also the background header img is flowing into the details.
+is this ok?
+last header_images original links are not working
+>>>correction made to original code base......user/show.html line 9 a tag had / at the end of 
