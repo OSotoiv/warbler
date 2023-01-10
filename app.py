@@ -152,8 +152,6 @@ def users_show(user_id):
                 .order_by(Message.timestamp.desc())
                 .limit(100)
                 .all())
-    # import pdb
-    # pdb.set_trace()
     return render_template('users/show.html', user=user, messages=messages)
 
 
@@ -179,6 +177,17 @@ def users_followers(user_id):
 
     user = User.query.get_or_404(user_id)
     return render_template('users/followers.html', user=user)
+
+
+@app.route('/users/<int:user_id>/likes')
+def users_likes(user_id):
+    """Show list of 'liked warblers' of this user."""
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+    user = User.query.get_or_404(user_id)
+    liked_msgs = g.user.likes
+    return render_template('users/likes.html', user=user, messages=liked_msgs)
 
 
 @app.route('/users/follow/<int:follow_id>', methods=['POST'])
@@ -247,8 +256,30 @@ def delete_user():
     return redirect("/signup")
 
 
+@app.route('/users/add_like/<int:msg_id>', methods=['POST'])
+def add_like_warble(msg_id):
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/login")
+    message = Message.query.get_or_404(msg_id)
+    g.user.likes.append(message)
+    db.session.commit()
+    return redirect('/')
+
+
+@app.route('/users/remove_like/<int:msg_id>', methods=['POST'])
+def remove_like_warble(msg_id):
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/login")
+    like = Likes.query.filter_by(message_id=msg_id).first()
+    db.session.delete(like)
+    db.session.commit()
+    return redirect('/')
+
 ##############################################################################
 # Messages routes:
+
 
 @app.route('/messages/new', methods=["GET", "POST"])
 def messages_add():
@@ -317,8 +348,8 @@ def homepage():
                     .limit(100)
                     .all())
         messages = [msg for msg in messages if msg.user_id in following_ids]
-        return render_template('home.html', messages=messages)
-
+        likes = [like.id for like in g.user.likes]
+        return render_template('home.html', messages=messages, likes=likes)
     else:
         return render_template('home-anon.html')
 
