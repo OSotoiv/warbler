@@ -11,7 +11,7 @@ from models import db, connect_db, User, Message, Follows, Likes
 CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
-
+app.app_context().push()
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
 app.config['SQLALCHEMY_DATABASE_URI'] = (
@@ -295,10 +295,11 @@ def messages_add():
     form = MessageForm()
 
     if form.validate_on_submit():
-        msg = Message(text=form.text.data)
-        g.user.messages.append(msg)
+        # had to change the way we add messages because it wasnt working in the test for some reason
+        msg = Message(text=form.text.data,user_id=g.user.id)
+        # g.user.messages.append(msg)
+        db.session.add(msg)
         db.session.commit()
-
         return redirect(f"/users/{g.user.id}")
 
     return render_template('messages/new.html', form=form)
@@ -308,7 +309,7 @@ def messages_add():
 def messages_show(message_id):
     """Show a message."""
 
-    msg = Message.query.get(message_id)
+    msg = Message.query.get_or_404(message_id)
     return render_template('messages/show.html', message=msg)
 
 

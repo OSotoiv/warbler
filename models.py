@@ -94,7 +94,8 @@ class User(db.Model):
         nullable=False,
     )
 
-    messages = db.relationship('Message')
+    messages = db.relationship(
+        'Message', cascade="delete, delete-orphan")
 
     followers = db.relationship(
         "User",
@@ -205,6 +206,14 @@ class Message(db.Model):
     )
 
     user = db.relationship('User')
+
+    def serialize(self):
+        """instance method, serializes attributes for API"""
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'text': self.text
+        }
 
 
 def connect_db(app):
